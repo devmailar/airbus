@@ -209,8 +209,7 @@ function CallAirbus()
 							Wait(2000)
 							DeleteEntity(driver)
 							DeleteEntity(airbus)
-							arrivedCity = true;
-
+							called = false;
 							TriggerServerEvent("airbus:sv:setBucket", 0)
 						end
 
