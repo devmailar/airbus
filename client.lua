@@ -203,6 +203,17 @@ function CallAirbus()
 
 					-- Wait for bus to arrive at the destination
 					while (#(GetEntityCoords(airbus) - vector3(259.2122, -1179.586, 29.44427)) > 10.0) do
+						-- If player gets out early
+						if (not IsPedInVehicle(PlayerPedId(), airbus, false)) then
+							SetBlipDisplay(GetMainPlayerBlipId(), 8);
+							Wait(2000)
+							DeleteEntity(driver)
+							DeleteEntity(airbus)
+							arrivedCity = true;
+
+							TriggerServerEvent("airbus:sv:setBucket", 0)
+						end
+
 						Wait(1000)
 					end
 
