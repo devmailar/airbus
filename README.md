@@ -5,7 +5,7 @@
 <img src="https://github.com/user-attachments/assets/9f0df25c-53d1-40b7-8a35-3b2673cb690f" width="200"/>
 <img src="https://github.com/user-attachments/assets/bee406c5-d67c-45c5-a491-965f381a840b" width="200"/>
 
-Are you tired of scooting/biking or running to the city from the LS airport simply because the server doesn't have a working bus service? Let me introduce you to AIR-BUS, the best airport transport system that takes new players from the LS airport to the city.
+Are you tired of driving/scooting/biking/running to the city from the LS airport because the server doesn’t have bus service? AIR-BUS is the best airport transport system that takes new players from the LS airport to the city.
 
 To install it on GitHub, click on the Code button and click on Download ZIP
 
