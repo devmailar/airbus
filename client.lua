@@ -28,32 +28,7 @@ CreateThread(function(threadId)
 		Wait(0)
 
 		if (realtimeDistanceToCallMarker < 15.0 and not called) then
-			DrawMarker(
-				2,
-				callMarker.x,
-				callMarker.y,
-				callMarker.z + 2,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				180.0,
-				0.0,
-				1.0,
-				1.0,
-				1.0,
-				255,
-				128,
-				0,
-				50,
-				false,
-				true,
-				2,
-				false,
-				nil,
-				nil,
-				false
-			)
+			DrawMarker(2, callMarker.x, callMarker.y, callMarker.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 255, 128, 0, 50, false, true, 2, false, nil, nil, false)
 		end
 
 		if (realtimeDistanceToCallMarker < 1.3 and not called) then
