@@ -1,13 +1,10 @@
-local callMarker = vector3(-1038.834, -2733.346, 19.169627)
 local called = false;
 local arrivedCity = false;
-local driverHash = 1885233650
-local vehicleHash = 1283517198
 local realtimeDistanceToCallMarker = 15.0
 local availableBucketsRange = { 0, 50 }
 
 -- As we mes with routing buckets, we need to default the player to bucket 0 to overwrite the old bucket
-TriggerServerEvent("airbus:sv:setBucket", 0)
+TriggerServerEvent("airbus:exit")
 
 -- Make sure the player blip is visible
 SetBlipDisplay(GetMainPlayerBlipId(), 8);
@@ -18,7 +15,7 @@ CreateThread(function(threadId)
 		Wait(500)
 
 		local playerCoords = GetEntityCoords(PlayerPedId())
-		realtimeDistanceToCallMarker = #(playerCoords - callMarker)
+		realtimeDistanceToCallMarker = #(playerCoords - Config.CallMarker)
 	end
 end)
 
@@ -27,20 +24,18 @@ CreateThread(function(threadId)
 	while (not called) do
 		Wait(0)
 
-		if (realtimeDistanceToCallMarker < 15.0 and not called) then
-			DrawMarker(2, callMarker.x, callMarker.y, callMarker.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 255, 128, 0, 50, false, true, 2, false, nil, nil, false)
+		if (realtimeDistanceToCallMarker < Config.MarkerDrawDistance and not called) then
+			DrawMarker(2, Config.CallMarker.x, Config.CallMarker.y, Config.CallMarker.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 255, 128, 0, 50, false, true, 2, false, nil, nil, false)
 		end
 
-		if (realtimeDistanceToCallMarker < 1.3 and not called) then
+		if (realtimeDistanceToCallMarker < Config.MarkerInteraction and not called) then
 			BeginTextCommandDisplayHelp("STRING")
 			AddTextComponentString("Press ~INPUT_CONTEXT~ to call AIR-BUS.")
 			EndTextCommandDisplayHelp(0, false, true, -1)
 
 			if (IsControlJustPressed(0, 38)) then
 				called = true;
-				TriggerServerEvent("airbus:sv:setBucket", math.random(availableBucketsRange[1], availableBucketsRange[2]));
-				Wait(1000)
-				CallAirbus()
+				TriggerServerEvent("airbus:enter")
 			end
 		end
 	end
@@ -48,13 +43,13 @@ end)
 
 -- Function to call the airbus
 function CallAirbus()
-	RequestModel(driverHash)
-	while not HasModelLoaded(driverHash) do
+	RequestModel(Config.Driver)
+	while not HasModelLoaded(Config.Driver) do
 		Wait(100)
 	end
 
-	if (HasModelLoaded(driverHash)) then
-		local driver = CreatePed(0, driverHash, -1067.831, -2559.146, 21.0, 237.912, true, true)
+	if (HasModelLoaded(Config.Driver)) then
+		local driver = CreatePed(0, Config.Driver, -1067.831, -2559.146, 21.0, 237.912, true, true)
 
 		if DoesEntityExist(driver) then
 			SetPedComponentVariation(driver, 2, 4, 4, 0) -- Hair
@@ -64,13 +59,13 @@ function CallAirbus()
 			SetPedComponentVariation(driver, 4, 35, 0, 0); -- Pants
 			SetPedComponentVariation(driver, 6, 21, 0, 0); -- Shoes
 
-			RequestModel(vehicleHash)
-			while not HasModelLoaded(vehicleHash) do
+			RequestModel(Config.Vehicle)
+			while not HasModelLoaded(Config.Vehicle) do
 				Wait(100)
 			end
 
-			if (HasModelLoaded(vehicleHash)) then
-				local airbus = CreateVehicle(1283517198, -1062.101, -2555.909, 20.07566, 150.1505, true, false)
+			if (HasModelLoaded(Config.Vehicle)) then
+				local airbus = CreateVehicle(Config.Vehicle, -1062.101, -2555.909, 20.07566, 150.1505, true, false)
 
 				if DoesEntityExist(airbus) then
 					local airbusBlip = AddBlipForEntity(airbus)
@@ -98,7 +93,7 @@ function CallAirbus()
 						20.08276,
 						10.0,
 						nil,
-						vehicleHash,
+						Config.Vehicle,
 						786599,
 						5.0, nil
 					)
@@ -171,7 +166,7 @@ function CallAirbus()
 						29.44427,
 						20.0,
 						nil,
-						vehicleHash,
+						Config.Vehicle,
 						786599,
 						5.0, nil
 					)
@@ -186,7 +181,7 @@ function CallAirbus()
 							DeleteEntity(airbus)
 							arrivedCity = true;
 
-							TriggerServerEvent("airbus:sv:setBucket", 0)
+							TriggerServerEvent("airbus:exit")
 						end
 
 						Wait(1000)
@@ -210,7 +205,7 @@ function CallAirbus()
 					DeleteEntity(airbus)
 					arrivedCity = true;
 
-					TriggerServerEvent("airbus:sv:setBucket", 0)
+					TriggerServerEvent("airbus:exit")
 				else
 					print("[ERROR] Entity airbus does not exist.")
 				end
@@ -220,3 +215,9 @@ function CallAirbus()
 		end
 	end
 end
+
+RegisterNetEvent("airbus:enterDone")
+AddEventHandler("airbus:enterDone", function()
+	Wait(1000)
+	CallAirbus()
+end)
